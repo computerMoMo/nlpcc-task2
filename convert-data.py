@@ -31,7 +31,7 @@ def clean_str(string):
 
 
 # read text data
-def read_text_data(file_list, cv=10, clean_string=True, chinese=False):
+def read_text_data(file_list, cv=10, clean_string=True, cut_words=False):
     revs = []
     vocab = defaultdict(float)
     flag = 0
@@ -50,7 +50,7 @@ def read_text_data(file_list, cv=10, clean_string=True, chinese=False):
                         orig_str = str_line.lower()
 
                     # cut words
-                    if chinese:
+                    if cut_words:
                         words_list = jieba.lcut(orig_str, cut_all=True)
                     else:
                         words_list = orig_str.split()
@@ -110,13 +110,13 @@ if __name__ == '__main__':
     print ("read text data")
     text_data_file_path = sys.argv[1]
     text_file_list = os.listdir(text_data_file_path)
-    revs, vocab = read_text_data(text_file_list, chinese=True)
+    revs, vocab = read_text_data(text_file_list, cut_words=False)
 
     # generate numpy
     numpy_save_path = sys.argv[2]
     numpy_save_name = sys.argv[3]
     print ("generate numpy")
-    sent_max_len = 50
+    sent_max_len = 20
     word_dim = 300
     x_array, y_array = words_convert(revs, max_len=sent_max_len, word_dim=word_dim)
     print("x array shape:", x_array.shape)
