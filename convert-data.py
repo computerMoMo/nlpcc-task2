@@ -31,14 +31,15 @@ def clean_str(string):
 
 
 # read text data
-def read_text_data(file_list, cv=10, clean_string=True, cut_words=False):
+def read_text_data(file_path, cv=10, clean_string=True, cut_words=False):
     revs = []
     vocab = defaultdict(float)
     flag = 0
     # read lines in text
-    for text_file in file_list:
+    text_file_list = os.listdir(file_path)
+    for text_file in text_file_list:
         try:
-            with open(text_file, 'r') as file_reader:
+            with open(file_path+text_file, 'r') as file_reader:
                 while True:
                     str_line = file_reader.readline()
                     if not str_line:
@@ -64,7 +65,7 @@ def read_text_data(file_list, cv=10, clean_string=True, cut_words=False):
                              'split': np.random.randint(0, cv)}
                     revs.append(datum)
         except:
-            print("errors in opening ", text_file)
+            print("errors in opening ", file_path+text_file)
         flag += 1
 
     return revs, vocab
@@ -109,8 +110,7 @@ if __name__ == '__main__':
     # open text files
     print ("read text data")
     text_data_file_path = sys.argv[1]
-    text_file_list = os.listdir(text_data_file_path)
-    revs, vocab = read_text_data(text_file_list, cut_words=False)
+    revs, vocab = read_text_data(text_data_file_path, cut_words=False)
 
     # generate numpy
     numpy_save_path = sys.argv[2]
