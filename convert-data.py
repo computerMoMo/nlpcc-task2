@@ -31,42 +31,58 @@ def clean_str(string):
 
 
 # read text data
-def read_text_data(file_path, cv=10, clean_string=True, cut_words=False):
+def read_text_data(tag_file, text_file_path, cv=10, clean_string=True, cut_words=False):
     revs = []
     vocab = defaultdict(float)
-    flag = 0
+
+    # read tag file
+    tag_dict = dict()
+    try:
+        tag_reader = open(tag_file, 'r')
+        tag_val = 0
+        for tag_line in tag_reader.readlines():
+            tag_list = tag_line.split('\t')
+            tag_key = tag_list[0]
+            tag_dict.update({tag_key: tag_val})
+            tag_val += 1
+    except:
+        print("error in opening ", tag_file)
+
+    print ("tag dict: ", tag_dict)
+
     # read lines in text
-    text_file_list = os.listdir(file_path)
-    for text_file in text_file_list:
-        try:
-            with open(file_path+text_file, 'r') as file_reader:
-                while True:
-                    str_line = file_reader.readline()
-                    if not str_line:
-                        break
-                    str_line = str_line.strip()
-                    if clean_string:
-                        orig_str = clean_str(str_line).lower()
-                    else:
-                        orig_str = str_line.lower()
+    try:
+        with open(text_file_path, 'r') as file_reader:
+            while True:
+                str_line = file_reader.readline()
+                if not str_line:
+                    break
+                str_line = str_line.strip()
+                str_list = str_line.split('\t')
+                line_tag = str_list[0]
 
-                    # cut words
-                    if cut_words:
-                        words_list = jieba.lcut(orig_str, cut_all=True)
-                    else:
-                        words_list = orig_str.split()
-                    words_set = set(words_list)
+                orig_str = "".join(str_list[1:])
+                if clean_string:
+                    orig_str = clean_str(orig_str).lower()
+                else:
+                    orig_str = orig_str.lower()
 
-                    for word in words_set:
-                        vocab[word] += 1
-                    datum = {'flag': str(flag),
-                             'word_list': words_list,
-                             'num_words': len(words_list),
-                             'split': np.random.randint(0, cv)}
-                    revs.append(datum)
-        except:
-            print("errors in opening ", file_path+text_file)
-        flag += 1
+                # cut words
+                if cut_words:
+                    words_list = jieba.lcut(orig_str, cut_all=True)
+                else:
+                    words_list = orig_str.split()
+                words_set = set(words_list)
+                for word in words_set:
+                    vocab[word] += 1
+                datum = {
+                    'flag': tag_dict.get(line_tag),
+                    'word_list': words_list,
+                    'split': np.random.randint(0, cv)
+                }
+                revs.append(datum)
+    except:
+        print("errors in opening ", text_file_path)
 
     return revs, vocab
 
@@ -109,12 +125,13 @@ if __name__ == '__main__':
 
     # open text files
     print ("read text data")
-    text_data_file_path = sys.argv[1]
-    revs, vocab = read_text_data(text_data_file_path, cut_words=False)
+    text_data_file = sys.argv[1]
+    tag_file = sys.argv[2]
+    revs, vocab = read_text_data(tag_file, text_data_file, cut_words=False)
 
     # generate numpy
-    numpy_save_path = sys.argv[2]
-    numpy_save_name = sys.argv[3]
+    numpy_save_path = sys.argv[3]
+    numpy_save_name = sys.argv[4]
     print ("generate numpy")
     sent_max_len = 20
     word_dim = 300

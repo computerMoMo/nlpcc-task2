@@ -50,9 +50,12 @@ if __name__ == '__main__':
     # 训练CNN
     sgd = SGD(lr=lr_in, clipnorm=1.0)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    early_stopping = EarlyStopping(monitor='val_loss', patience=4)
+    # early_stopping = EarlyStopping(monitor='val_loss', patience=4)
+    # model.fit(x_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(x_test, y_test),
+    #           callbacks=[early_stopping], shuffle=True)
+
     model.fit(x_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(x_test, y_test),
-              callbacks=[early_stopping], shuffle=True)
+              shuffle=True)
 
     # 测试集准确率
     loss, acc = model.evaluate(x_test, y_test, batch_size=batch_size, verbose=1)
