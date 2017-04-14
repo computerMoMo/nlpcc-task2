@@ -117,12 +117,12 @@ def make_idx_data_cv(revs, word_idx_map, word_vector, max_l=51, k=300, filter_h=
     return x_target_array, y_target_array
 
 if __name__ == "__main__":
-    w2v_file = '/home/zmh/exp-data/word-vectors/baike_vector.bin'
+    w2v_file = '/home/zmh/exp-data/word-vectors/baike-vector.bin'
     data_path = 'exp-data/'
     data_str = sys.argv[1]
     # load data
     print('load data')
-    tag_list = ['history', 'military', 'baby', 'world', 'tech', 'game','society',
+    tag_list = ['history', 'military', 'baby', 'world', 'tech', 'game', 'society',
                 'sports', 'travel', 'car', 'food', 'entertainment', 'finance', 'fashion',
                 'discovery', 'story', 'regimen', 'essay']
     revs, vocab = build_data_cv(tag_list, data_path, data_str, cv=10)
