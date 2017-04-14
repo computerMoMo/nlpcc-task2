@@ -18,10 +18,9 @@ def build_data_cv(tag_list, data_path, data_str, cv=10):
     revs = []
 
     vocab = defaultdict(float)
-
+    flag = 0
     for tag in tag_list:
         text_file = data_path+data_str+'/'+data_str+'-'+tag+'.txt'
-        flag = 0
         with open(text_file, "rb") as f:
             for line in f:
                 rev = []
