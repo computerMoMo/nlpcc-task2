@@ -89,7 +89,6 @@ def read_text_data(tag_file, text_file_name, cv=10, clean=False, cut=False):
 # 生成词向量中不存在的词的词向量
 def add_unknown_words(text_vocabs, word_dim=300):
     vectors_vocab = word_vectors.vocab
-    print("len vectors word: ", len(vectors_vocab))
     unknown_words_dic = dict()
     for word in text_vocabs:
         if word not in vectors_vocab:
@@ -144,9 +143,10 @@ if __name__ == '__main__':
     vectors_dim = 300
     max_sent_len = int(sys.argv[3])
     print("generate numpy arrays")
-    print("vocabulary size: ", len(text_vocab))
+    print("vocabulary of word vector file size is :", len(word_vectors.vocab))
+    print("vocabulary of text size is :", len(text_vocab))
     unknown_words_vectors = add_unknown_words(text_vocab, word_dim=vectors_dim)
-    print("nums of words don't exit in vectors are: ", len(unknown_words_vectors))
+    print("nums of words don't exist in vector file is:", len(unknown_words_vectors))
     x_array, y_array = convert_text_data(text_revs, unknown_words_vectors, max_len=max_sent_len, word_dim=vectors_dim)
     print("x array shape:", x_array.shape)
     print("y array shape:", y_array.shape)
