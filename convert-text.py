@@ -130,7 +130,7 @@ if __name__ == '__main__':
     # 读取文本并生成词典
     print("reading text data...")
     text_data_path = sys.argv[1]
-    text_revs, text_vocab = read_text_data('tag2id.txt', text_data_path, cv=10, clean=False, cut=False)
+    text_revs, text_vocab = read_text_data('exp-data/tag2id.txt', text_data_path, cv=10, clean=False, cut=False)
 
     # 读取词向量
     print("loading word vectors...")
