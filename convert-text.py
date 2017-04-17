@@ -134,7 +134,8 @@ if __name__ == '__main__':
 
     # 读取词向量
     print("loading word vectors...")
-    word_vectors_path = '/home/zmh/exp-data/word-vectors/baike-vector.bin'
+    # word_vectors_path = '/home/zmh/exp-data/word-vectors/baike-vector.bin'
+    word_vectors_path = sys.argv[4]
     word_vectors = KeyedVectors.load_word2vec_format(word_vectors_path, binary=True)
 
     # 生成numpy数组
