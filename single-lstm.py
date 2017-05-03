@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # 构建模型
     model = Sequential()
     model.add(LSTM(units=out_put_dim, input_shape=(max_len, word_dim), dropout=0.2, recurrent_dropout=0.2,
-                   activation='relu'), name='lstm_1')
+                   activation='relu', name='lstm_1'))
     model.add(Flatten())
     model.add(Dense(units=nb_classes, activation='softmax', name='softmax_1'))
 
