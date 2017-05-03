@@ -3,7 +3,7 @@ from __future__ import print_function
 import sys
 import numpy as np
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Flatten, Reshape
+from keras.layers.core import Dense, Dropout, Flatten, Reshape, Permute
 from keras.layers.convolutional import Conv2D, MaxPooling2D
 from keras.layers.recurrent import LSTM
 from keras.utils import np_utils
@@ -47,10 +47,13 @@ if __name__ == '__main__':
 
     # 建立模型
     model = Sequential()
-    model.add(Conv2D(nb_filters, filter_width, word_dim, activation='relu', input_shape=(max_len, word_dim, 1),
-                     name='cnn1'))
+    model.add(Conv2D(filters=nb_filters, kernel_size=(filter_width, word_dim), activation='relu',
+                     input_shape=(max_len, word_dim, 1), name='cnn1'))
     model.add(MaxPooling2D(pool_size=(max_len - filter_width + 1, 1), name='maxpooling1'))
-    model.add(Reshape((-1, nb_filters, 1)))
+    model.add(Reshape((-1, nb_filters), name='reshape1'))
+    model.add(Permute((2, 1), name='permute1'))
+    # 经过permute之后此时的特征向量size=(None, nb_filters, 1),None为样本数量
+    # 然后再添加LSTM层
     model.add(LSTM(units=out_put_dim, input_shape=(nb_filters, 1), dropout=0.2, recurrent_dropout=0.2,
                    activation='relu', return_sequences=True, name='lstm_1'))
     model.add(Flatten())
