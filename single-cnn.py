@@ -22,10 +22,11 @@ if __name__ == '__main__':
     nb_epoch = int(sys.argv[3])
     nb_classes = 18
     max_len = 20
-    word_dim = 300
+    word_dim = 50
     nb_filters = 250
     batch_size = 128
     filter_width = 3
+    early_stop = int(sys.argv[4])#训练时是否要early stop,0为不需要
 
     # 读入训练和测试数据
     x_train = np.load(data_path+'x-' + train_file_name + '.npy')
@@ -50,12 +51,14 @@ if __name__ == '__main__':
     # 训练CNN
     sgd = SGD(lr=lr_in, clipnorm=1.0)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    # early_stopping = EarlyStopping(monitor='val_loss', patience=4)
-    # model.fit(x_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(x_test, y_test),
-    #           callbacks=[early_stopping], shuffle=True)
 
-    model.fit(x_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(x_test, y_test),
-              shuffle=True)
+    if early_stop > 0:
+        early_stopping = EarlyStopping(monitor='acc', patience=5, mode='auto')
+        model.fit(x_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(x_test, y_test),
+                  callbacks=[early_stopping], shuffle=True)
+    else:
+        model.fit(x_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(x_test, y_test),
+                  shuffle=True)
 
     # 测试集准确率
     loss, acc = model.evaluate(x_test, y_test, batch_size=batch_size, verbose=1)

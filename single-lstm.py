@@ -8,6 +8,8 @@ from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Flatten
 from keras.optimizers import SGD
 from keras.layers import LSTM
+from keras.callbacks import EarlyStopping
+
 np.random.seed(1337)
 
 if __name__ == '__main__':
@@ -25,6 +27,7 @@ if __name__ == '__main__':
     lr_in = 0.7
     batch_size = 128
     nb_epoch = int(sys.argv[3])
+    early_stop = int(sys.argv[4])  # 训练时是否要early stop,0为不需要
 
     # 读入训练数据和测试数据
     x_train = np.load(data_path+'x-'+train_file_name+'.npy')
@@ -50,8 +53,14 @@ if __name__ == '__main__':
     # 训练
     sgd = SGD(lr=lr_in, clipnorm=1.0)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-    model.fit(x_train, y_train, batch_size=batch_size, epochs=nb_epoch, verbose=1, validation_data=(x_test, y_test),
-              shuffle=True)
+
+    if early_stop > 0:
+        early_stopping = EarlyStopping(monitor='acc', patience=5, mode='auto')
+        model.fit(x_train, y_train, batch_size=batch_size, nb_epoch=nb_epoch, verbose=1, validation_data=(x_test, y_test),
+                  callbacks=[early_stopping], shuffle=True)
+    else:
+        model.fit(x_train, y_train, batch_size=batch_size, epochs=nb_epoch, verbose=1, validation_data=(x_test, y_test),
+                  shuffle=True)
 
     # 测试集准确率
     loss, acc = model.evaluate(x_test, y_test, batch_size=batch_size, verbose=1)
