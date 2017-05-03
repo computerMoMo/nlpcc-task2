@@ -47,11 +47,11 @@ if __name__ == '__main__':
 
     # 建立模型
     model = Sequential()
-    model.add(Conv2D(nb_filters, filter_width, word_dim, activation='relu',
-                            input_shape=(max_len, word_dim, 1), name='cnn1'))
+    model.add(Conv2D(nb_filters, filter_width, word_dim, activation='relu', input_shape=(max_len, word_dim, 1),
+                     name='cnn1'))
     model.add(MaxPooling2D(pool_size=(max_len - filter_width + 1, 1), name='maxpooling1'))
     model.add(Reshape((-1, nb_filters, 1)))
-    model.add(LSTM(units=out_put_dim, dropout=0.2, recurrent_dropout=0.2,
+    model.add(LSTM(units=out_put_dim, input_shape=(nb_filters, 1), dropout=0.2, recurrent_dropout=0.2,
                    activation='relu', return_sequences=True, name='lstm_1'))
     model.add(Flatten())
     model.add(Dense(units=nb_classes, activation='softmax', name='softmax'))
