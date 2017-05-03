@@ -3,7 +3,7 @@ from __future__ import print_function
 import sys
 import numpy as np
 from keras.models import Sequential
-from keras.layers.core import Dense, Dropout, Flatten
+from keras.layers.core import Dense, Dropout, Flatten, Reshape
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.layers.recurrent import LSTM
 from keras.utils import np_utils
@@ -50,6 +50,7 @@ if __name__ == '__main__':
     model.add(Convolution2D(nb_filters, filter_width, word_dim, activation='relu',
                             input_shape=(max_len, word_dim, 1), name='cnn1'))
     model.add(MaxPooling2D(pool_size=(max_len - filter_width + 1, 1), name='maxpooling1'))
+    model.add(Reshape(-1, nb_filters, 1))
     model.add(LSTM(units=out_put_dim, dropout=0.2, recurrent_dropout=0.2,
                    activation='relu', return_sequences=True, name='lstm_1'))
     model.add(Flatten())
